@@ -8,6 +8,6 @@ db=SQLAlchemy(app)
 
 api = restful.Api(app)
 from app.openapi.resource.userapi import userapi
-api.add_resource(userapi, '/user','/user/<int:id>')
+api.add_resource(userapi, '/v1/user','/v1/user/<int:id>')
 
 db.create_all()
