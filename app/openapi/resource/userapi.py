@@ -19,8 +19,14 @@ class userapi(restful.Resource):
         db.session.commit()
         return (jsonify({"status":200,"msg":"add User success"}))
     def get(self,id):
-        print id
         user = User.query.get(id)
         if not user:
             abort(400)
         return jsonify({'username': user.username})
+    def delete(self,id):
+        user = User.query.get(id)
+        if not user:
+            abort(400)
+        else:
+            db.session.delete(user)
+        return jsonify({'status':200, 'msg':"delete "+user.username+" ok"})
