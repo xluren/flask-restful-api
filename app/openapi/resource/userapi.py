@@ -23,6 +23,23 @@ class userapi(restful.Resource):
         if not user:
             abort(400)
         return jsonify({'username': user.username})
+    def put(self):
+        username = request.json.get('username')
+        password = request.json.get('password')
+        if username is None or password is None:
+            print "hello"
+            abort(400)    # missing arguments
+        if User.query.filter_by(username=username).first() is  None:
+            print "world"
+            abort(400)    # existing user
+        user_list=db.session.query(User).filter_by(username=username).all()
+        print len(user_list)
+        user=user_list[0]
+        
+        user.hash_password(password)
+        db.session.commit()
+        return (jsonify({"status":200,"msg":"modify User success"}))
+
     def delete(self,id):
         user = User.query.get(id)
         if not user:

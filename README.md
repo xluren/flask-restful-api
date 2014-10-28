@@ -34,7 +34,14 @@ POST /v1/user/      add a user
 
 GET  /v1/user/id    get a user
 
-DELETE /va/user/id  DELETE a user
+DELETE /v1/user/id  DELETE a user
+
+@2014-10-28
+
+add PUT support  & we can  modify  a user with  PUT
+
+PUT  /v1/user      modify a user  
+
 
 how to test
 
@@ -120,4 +127,17 @@ Date: Mon, 27 Oct 2014 05:36:13 GMT
 }
 [xluren@test ~]$
 ```
+Modify a user like this use PUT
+```
+[xluren@test flask-restful-api]$ curl -i -X PUT -H "Content-Type: application/json" -d '{"username":"xluren","password":"jasmine"}' http://10.210.71.145:9998/v1/user
+HTTP/1.0 200 OK
+Content-Type: application/json
+Content-Length: 52
+Server: Werkzeug/0.9.6 Python/2.6.6
+Date: Tue, 28 Oct 2014 01:36:16 GMT
 
+{
+      "msg": "modify User success", 
+            "status": 200
+}[xluren@test flask-restful-api]$
+```
