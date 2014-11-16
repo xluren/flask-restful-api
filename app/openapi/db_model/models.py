@@ -15,3 +15,6 @@ class User(db.Model):
 
     def verify_password(self, password):
         return password_context.verify(password, self.password)
+
+    def set_password(self, password):
+        self.password=self.hash_password(password)
