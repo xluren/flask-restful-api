@@ -14,14 +14,13 @@ class userapi(restful.Resource):
         password=user_info.password
 
         if User.query.filter_by(username=username).first() is not None:
-            abort(400)    # existing user
+            return (jsonify({"msg":"user exist"}))
         else:
-            user = User(username=username)
-        user.hash_password(password)
+            user = User(username,password)
         db.session.add(user)
-        db.session.commit()
+        status=db.session.commit()
+        return (jsonify({"msg":"add user successful"}))
 
-        return (jsonify({"status":200,"msg":"add User success"}))
     def get(self,id):
         user = User.query.get(id)
         if not user:

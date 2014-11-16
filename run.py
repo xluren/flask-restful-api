@@ -1,2 +1,2 @@
 from app import app
-app.run(host="10.210.71.145",port=9998,debug=True)
+app.run(host="0.0.0.0",port=9998,debug=True)
