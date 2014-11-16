@@ -28,12 +28,16 @@ class userapi(restful.Resource):
         return jsonify({'username': user.username})
 
     def put(self):
-        username = request.json.get('username')
-        password = request.json.get('password')
-        if username is None or password is None:
-            abort(400)    # missing arguments
+        parser = reqparse.RequestParser()
+        parser.add_argument('username', type=str, required=True)
+        parser.add_argument('password', type=str, required=True)
+        user_info = parser.parse_args()
+        username=user_info.username
+        password=user_info.password
+
         if User.query.filter_by(username=username).first() is  None:
-            abort(400)    # existing user
+            return (jsonify({"msg":"user not exists"}))
+            
         user_list=db.session.query(User).filter_by(username=username).all()
         print len(user_list)
         user=user_list[0]
