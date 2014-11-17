@@ -29,13 +29,19 @@ class user(restful.Resource):
         status=db.session.commit()
         return (jsonify({"msg":"add user successful"}))
 
+    @marshal_with(user_info)
     def get(self,id):
         user = User.query.get(id)
-        if not user:
+        if user :
+            return user
+        else:
             abort(400)
-        return jsonify({'username': user.username,"password":user.password})
 
-    def put(self):
+    def put(self,id):
+
+        if not User.query.get(id):
+            return (jsonify({"msg":"user not exist"})),200
+
         parser = reqparse.RequestParser()
         parser.add_argument('username', type=str, required=True)
         parser.add_argument('password', type=str, required=True)
@@ -43,13 +49,12 @@ class user(restful.Resource):
         username=user_info.username
         password=user_info.password
 
-        if User.query.filter_by(username=username).first() is  None:
-            return (jsonify({"msg":"user not exists"}))
-            
-        user=User.query.filter_by(username=username).first()
+        user=User.query.get(id)
+        user.set_username(username)
         user.set_password(password)
+        print user.username
         db.session.commit()
-        return (jsonify({"status":200,"msg":"modify User success"}))
+        return (jsonify({"msg":"modify User success"}))
 
     def delete(self,id):
         user = User.query.get(id)
@@ -57,7 +62,8 @@ class user(restful.Resource):
             abort(400)
         else:
             db.session.delete(user)
-        return jsonify({'status':200, 'msg':"delete "+user.username+" ok"})
+        return jsonify({'msg':"delete "+user.username+" ok"})
+
 class userlist(restful.Resource):
     @marshal_with(user_info)
     def get(self):

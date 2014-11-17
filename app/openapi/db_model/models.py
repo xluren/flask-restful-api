@@ -19,3 +19,6 @@ class User(db.Model):
 
     def set_password(self, password):
         self.password=self.hash_password(password)
+
+    def set_username(self, username):
+        self.username=username
