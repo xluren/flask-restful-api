@@ -3,8 +3,16 @@ from app.openapi.db_model.models import User
 from flask.ext import restful
 from flask     import request,jsonify,abort
 from flask.ext.restful import reqparse
+from flask.ext.restful import marshal_with,fields
 
-class userapi(restful.Resource):
+
+user_info={
+    'id': fields.Integer,
+    'username': fields.String,
+    'password': fields.String,
+}
+
+class user(restful.Resource):
     def post(self):
         parser = reqparse.RequestParser()
         parser.add_argument('username', type=str, required=True)
@@ -50,3 +58,8 @@ class userapi(restful.Resource):
         else:
             db.session.delete(user)
         return jsonify({'status':200, 'msg':"delete "+user.username+" ok"})
+class userlist(restful.Resource):
+    @marshal_with(user_info)
+    def get(self):
+        users=db.session.query(User).all()
+        return users

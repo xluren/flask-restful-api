@@ -10,6 +10,7 @@ class User(db.Model):
     def __init__(self, username, password):
         self.username = username
         self.password = self.hash_password(password)
+
     def hash_password(self, password):
         return password_context.encrypt(password)
 

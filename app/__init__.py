@@ -7,7 +7,8 @@ app.config.from_object('config.TestConfig')
 db=SQLAlchemy(app)
 
 api = restful.Api(app)
-from app.openapi.resource.userapi import userapi
-api.add_resource(userapi, '/v1/user','/v1/user/<int:id>')
+from app.openapi.resource.userapi import user,userlist
+api.add_resource(user, '/v1/user','/v1/user/<int:id>')
+api.add_resource(userlist, '/v1/user','/v1/userlist')
 
 db.create_all()
