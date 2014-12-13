@@ -22,3 +22,15 @@ class User(db.Model):
 
     def set_username(self, username):
         self.username=username
+class Servive(db.Model):
+    __tablename__ = "servive"
+    servive_id=db.Column(db.Integer,primary_key)
+    servive_name=db.Column(db.String(20))
+    servive_parent=db.Column(db.Integer)
+
+    def __init__(self,servive_name,servive_parent):
+        self.servive_name=servive_name
+        self.servive_parent=servive_parent
+    def __repr__(self):
+        return "<servive info %r,%r,%r>" % (self.servive_id,self.servive_name,self.servive_parent)
+
