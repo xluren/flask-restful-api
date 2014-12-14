@@ -13,6 +13,7 @@ service_info={
 }
 
 class Service(restful.Resource):
+
     def post(self):
         parser = reqparse.RequestParser()
         parser.add_argument('service_name', type=str, required=True)
@@ -41,19 +42,7 @@ class Service(restful.Resource):
 
     def put(self,id):
 
-        if not Service.query.get(id):
-            return (jsonify({"msg":"user not exist"})),200
-
-        parser = reqparse.RequestParser()
-        parser.add_argument('service_name', type=str, required=True)
-        parser.add_argument('serive_parent', type=int, required=True)
-        service_info = parser.parse_args()
-        service_name=service_info.service_name
-        serive_parent=service_info.serive_parent
-
-        service=Service.query.get(id)
-        service.set_service_name(service_name)
-        service.set_service_parent(service_parent)
+        Service.query.filter_by(service_id=id).update(request.json)
         db.session.commit()
         return (jsonify({"msg":"modify serice success"}))
 

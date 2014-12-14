@@ -4,10 +4,12 @@ from flask.ext import restful
 from flask     import request,jsonify,abort
 from flask.ext.restful import reqparse
 from flask.ext.restful import marshal_with,fields
+import json
 
 
 user_info={
     'id': fields.Integer,
+    'service_id':fields.Integer,
     'username': fields.String,
     'password': fields.String,
 }
@@ -15,19 +17,23 @@ user_info={
 class user(restful.Resource):
     def post(self):
         parser = reqparse.RequestParser()
+        parser.add_argument('service_id',type=int)
         parser.add_argument('username', type=str, required=True)
         parser.add_argument('password', type=str, required=True)
+
         user_info = parser.parse_args()
         username=user_info.username
         password=user_info.password
+        service_id=user_info.service_id
+        try:
+            user = User(username,password,service_id)
+            db.session.add(user)
+            status=db.session.commit()
+            msg="succ"
+        except:
+            msg="error"
 
-        if User.query.filter_by(username=username).first() is not None:
-            return (jsonify({"msg":"user exist"}))
-        else:
-            user = User(username,password)
-        db.session.add(user)
-        status=db.session.commit()
-        return (jsonify({"msg":"add user successful"}))
+        return (jsonify({"msg":msg}))
 
     @marshal_with(user_info)
     def get(self,id):
@@ -39,20 +45,22 @@ class user(restful.Resource):
 
     def put(self,id):
 
-        if not User.query.get(id):
+        user=User.query.get(id)
+        if not user:
             return (jsonify({"msg":"user not exist"})),200
 
         parser = reqparse.RequestParser()
-        parser.add_argument('username', type=str, required=True)
-        parser.add_argument('password', type=str, required=True)
+        parser.add_argument('username', type=str)
+        parser.add_argument('password', type=str)
+        parser.add_argument('service_id', type=str)
         user_info = parser.parse_args()
-        username=user_info.username
-        password=user_info.password
 
-        user=User.query.get(id)
-        user.set_username(username)
-        user.set_password(password)
-        print user.username
+        if user_info.username is not None:
+            user.set_username(user_info.username)
+        if user_info.password is not None:
+            user.set_password(user_info.password)
+        if user_info.service_id is not None:
+            user.set_service_id(user_info.service_id)
         db.session.commit()
         return (jsonify({"msg":"modify User success"}))
 
